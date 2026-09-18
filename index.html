@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Make Your Own Resources</title>
+<style>
+:root{
+  --bn-navy:#163A59; --bn-primary:#075985; --bn-blue:#1788B8; --bn-light-blue:#EAF5FA;
+  --bn-gold:#F6D98A; --bn-white:#fff; --bn-border:#D9E0E5; --bn-text:#252A2E; --bn-muted:#68737D;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bn-white);color:var(--bn-text)}
+header{background:var(--bn-light-blue);border-bottom:3px solid var(--bn-gold);padding:0.85rem 1.25rem}
+.brand{font-weight:700;color:var(--bn-navy)}.brand span{color:var(--bn-blue);font-weight:600}
+main{max-width:1100px;margin:0 auto;padding:1.25rem}
+h1{margin:0 0 0.35rem;color:var(--bn-navy);font-size:1.6rem;border-bottom:3px solid var(--bn-gold);display:inline-block;padding-bottom:0.25rem}
+.lede{color:var(--bn-muted);margin:0.75rem 0 1.25rem;max-width:40rem}
+.toolbar{display:flex;flex-wrap:wrap;gap:0.6rem;align-items:center;margin-bottom:1rem}
+input[type=search],select{border:1px solid var(--bn-border);border-radius:4px;padding:0.45rem 0.65rem;min-width:12rem}
+.btn{border:1px solid var(--bn-border);background:#fff;color:var(--bn-primary);border-radius:4px;padding:0.45rem 0.8rem;cursor:pointer;font:inherit}
+.btn-primary{background:#075985;border-color:#075985;color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.meta{font-size:0.75rem;color:var(--bn-blue);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem}
+.card{border:1px solid var(--bn-border);border-radius:4px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+.card.selected{outline:3px solid var(--bn-blue);outline-offset:1px}
+.card-cover{aspect-ratio:4/3;background:var(--bn-light-blue);display:flex;align-items:center;justify-content:center;padding:0.5rem;cursor:pointer}
+.card-cover img{max-width:100%;max-height:100%;object-fit:contain}
+.card-body{padding:0.7rem;display:flex;flex-direction:column;gap:0.35rem;flex:1}
+.card-body h2{margin:0;font-size:0.95rem;color:var(--bn-navy)}
+.card-body p{margin:0;font-size:0.8rem;color:var(--bn-muted)}
+.card-actions{display:flex;gap:0.4rem;margin-top:auto;padding-top:0.4rem}
+.lightbox{position:fixed;inset:0;background:rgba(22,58,89,.88);display:none;align-items:center;justify-content:center;padding:1rem;z-index:40}
+.lightbox.open{display:flex}
+.lightbox img{max-width:min(96vw,1100px);max-height:85vh;object-fit:contain;background:#fff}
+.lightbox .close{position:absolute;top:1rem;right:1rem}
+.print-root{display:none}
+@media print{
+  header,main,.no-print{display:none!important}
+  .print-root{display:block!important}
+  .print-sheet{page-break-after:always;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0.4in}
+  .print-sheet:last-child{page-break-after:auto}
+  .print-sheet img{max-width:100%;max-height:calc(100vh - 1.2in);object-fit:contain}
+  .credit{margin-top:0.35rem;font-size:10pt;color:#555;text-align:center;line-height:1.35}
+}
+</style>
+</head>
+<body>
+<header class="no-print">
+  <div class="brand">Make Your Own Resources <span>· Bridgette Nicholson</span></div>
+</header>
+<main class="no-print">
+  <p class="meta">Resources</p>
+  <h1>Make Your Own Resources</h1>
+  <p class="lede">Create your own movement and sound activities with group roles, worksheets, instruments, body percussion, apps, and location ideas.</p>
+  <div class="toolbar">
+    <input type="search" id="q" placeholder="Search pages…" />
+    <select id="cat"><option value="">All categories</option></select>
+    <button class="btn" id="selectVisible" type="button">Select visible</button>
+    <button class="btn" id="clearSel" type="button">Clear</button>
+    <button class="btn btn-primary" id="printSel" type="button" disabled>Print selected (0)</button>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+<div class="lightbox no-print" id="lightbox"><button class="btn close" id="closeLb" type="button">Close</button><img id="lbImg" alt="" /></div>
+<div class="print-root" id="printRoot"></div>
+<script>
+const DATA = {"title":"Make Your Own Resources","description":"Create your own movement and sound activities with group roles, worksheets, instruments, body percussion, apps, and location ideas.","pages":[{"id":"make-your-own-001","title":"Director Start Change Stop Alt A","category":"Group Roles","description":"Alternate Director role layout (girl with paper) showing Start, Change, Stop cues.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/01%20Group%20Roles/director-start-change-stop-alt-a.png","orientation":"portrait"},{"id":"make-your-own-002","title":"Director Start Change Stop Alt B","category":"Group Roles","description":"Alternate Director role page (boy pointing to Start/Change/Stop).","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/01%20Group%20Roles/director-start-change-stop-alt-b.png","orientation":"portrait"},{"id":"make-your-own-003","title":"Director Start Change Stop","category":"Group Roles","description":"Director role: gives cues and leads the flow with Start, Change, and Stop signals.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/01%20Group%20Roles/director-start-change-stop.png","orientation":"portrait"},{"id":"make-your-own-004","title":"Movement Followers Watch Follow Join Alt A","category":"Group Roles","description":"Alternate Movement Followers role page with watch, follow, join in steps.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/01%20Group%20Roles/movement-followers-watch-follow-join-alt-a.png","orientation":"portrait"},{"id":"make-your-own-005","title":"Movement Followers Watch Follow Join Alt B","category":"Group Roles","description":"Alternate Movement Followers page with energetic marching sequence.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/01%20Group%20Roles/movement-followers-watch-follow-join-alt-b.png","orientation":"portrait"},{"id":"make-your-own-006","title":"Movement Followers Watch Follow Join","category":"Group Roles","description":"Role page for Movement Followers: watch, follow, and join the movement.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/01%20Group%20Roles/movement-followers-watch-follow-join.png","orientation":"portrait"},{"id":"make-your-own-007","title":"Movement Maker Choose Create Demonstrate Alt A","category":"Group Roles","description":"Alternate Movement Maker role page featuring a boy demonstrating movement ideas.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/01%20Group%20Roles/movement-maker-choose-create-demonstrate-alt-a.png","orientation":"portrait"},{"id":"make-your-own-008","title":"Movement Maker Choose Create Demonstrate Alt B","category":"Group Roles","description":"Alternate Movement Maker role page (girl with braids) choose/create/demonstrate.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/01%20Group%20Roles/movement-maker-choose-create-demonstrate-alt-b.png","orientation":"portrait"},{"id":"make-your-own-009","title":"Movement Maker Choose Create Demonstrate","category":"Group Roles","description":"Role page for Movement Maker: choose an idea, create a movement, demonstrate for the group.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/01%20Group%20Roles/movement-maker-choose-create-demonstrate.png","orientation":"portrait"},{"id":"make-your-own-010","title":"Music Makers Beat Tap Use Tech Alt A","category":"Group Roles","description":"Alternate Music Makers role page with beat, tap, and use tech options.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/01%20Group%20Roles/music-makers-beat-tap-use-tech-alt-a.png","orientation":"portrait"},{"id":"make-your-own-011","title":"Music Makers Beat Tap Use Tech","category":"Group Roles","description":"Role page for Music Makers: create beat, rhythm, or sound by drumming, tapping, or using tech.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/01%20Group%20Roles/music-makers-beat-tap-use-tech.png","orientation":"portrait"},{"id":"make-your-own-012","title":"Recorder Record Review Reflect Alt A","category":"Group Roles","description":"Alternate Recorder role page (boy with glasses and tablet) with record, review, reflect.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/01%20Group%20Roles/recorder-record-review-reflect-alt-a.png","orientation":"portrait"},{"id":"make-your-own-013","title":"Recorder Record Review Reflect Alt B","category":"Group Roles","description":"Alternate Recorder role page (girl with tablet) for record, review, reflect.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/01%20Group%20Roles/recorder-record-review-reflect-alt-b.png","orientation":"portrait"},{"id":"make-your-own-014","title":"Recorder Record Review Reflect","category":"Group Roles","description":"Recorder role: capture the activity so the group can record, review, and reflect.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/01%20Group%20Roles/recorder-record-review-reflect.png","orientation":"portrait"},{"id":"make-your-own-015","title":"Create Together Role Worksheet Alt A","category":"Role Worksheets","description":"Create Together role worksheet for assigning roles across rounds; Movement Followers text may match Director (needs BN check).","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/02%20Role%20Worksheets/create-together-role-worksheet-alt-a.png","orientation":"landscape"},{"id":"make-your-own-016","title":"Create Together Role Worksheet Alt B","category":"Role Worksheets","description":"Alternate Create Together role worksheet layout; Movement Followers text may need review.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/02%20Role%20Worksheets/create-together-role-worksheet-alt-b.png","orientation":"portrait"},{"id":"make-your-own-017","title":"Create Together Role Worksheet","category":"Role Worksheets","description":"Create Together role worksheet with corrected Movement Followers wording: watch, follow, and join the movement.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/02%20Role%20Worksheets/create-together-role-worksheet.png","orientation":"portrait"},{"id":"make-your-own-018","title":"Methods For Making Sound And Rhythm","category":"Sound and Rhythm Methods","description":"Guide to beat-making instruments, body percussion, and apps/sound tools.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/03%20Sound%20and%20Rhythm%20Methods/methods-for-making-sound-and-rhythm.png","orientation":"portrait"},{"id":"make-your-own-019","title":"Clapping And Body Percussion Five Columns Alt A","category":"Body Percussion","description":"Alternate five-column body percussion page (same five actions).","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/04%20Body%20Percussion/clapping-and-body-percussion-five-columns-alt-a.png","orientation":"landscape"},{"id":"make-your-own-020","title":"Clapping And Body Percussion Five Columns","category":"Body Percussion","description":"Five body percussion techniques: clap, tap thighs, pat, stomp, tap table.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/04%20Body%20Percussion/clapping-and-body-percussion-five-columns.png","orientation":"landscape"},{"id":"make-your-own-021","title":"Clapping And Body Percussion Icon Row","category":"Body Percussion","description":"Body percussion poster with five action illustrations and matching icon row.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/04%20Body%20Percussion/clapping-and-body-percussion-icon-row.png","orientation":"landscape"},{"id":"make-your-own-022","title":"Clapping And Body Percussion Seated Standing","category":"Body Percussion","description":"Body percussion grouped as clapping, seated, and standing actions.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/04%20Body%20Percussion/clapping-and-body-percussion-seated-standing.png","orientation":"landscape"},{"id":"make-your-own-023","title":"Beat Making Instruments Five Ways","category":"Beat-Making Instruments","description":"Five beat-making instrument ways: hand drum, bucket drum, wall drum, floor sticks, shake.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/05%20Beat-Making%20Instruments/beat-making-instruments-five-ways.png","orientation":"landscape"},{"id":"make-your-own-024","title":"Beat Making Instruments Group Overview","category":"Beat-Making Instruments","description":"Group overview of children using drums, shaker, tambourine, and sticks.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/05%20Beat-Making%20Instruments/beat-making-instruments-group-overview.png","orientation":"landscape"},{"id":"make-your-own-025","title":"Beat Making Instruments Hand Drum Sticks","category":"Beat-Making Instruments","description":"Beat-making with hand percussion, drum-based rhythm, and sticks on surfaces.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/05%20Beat-Making%20Instruments/beat-making-instruments-hand-drum-sticks.png","orientation":"landscape"},{"id":"make-your-own-026","title":"Apps And Sound Tools Five Ways","category":"Apps and Sound Tools","description":"Five digital sound options: beat app, sound app, speaker, touch to play, connect.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/06%20Apps%20and%20Sound%20Tools/apps-and-sound-tools-five-ways.png","orientation":"landscape"},{"id":"make-your-own-027","title":"Apps And Sound Tools Table Group","category":"Apps and Sound Tools","description":"Children around a table using tablets, apps, and a shared speaker to make rhythm.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/06%20Apps%20and%20Sound%20Tools/apps-and-sound-tools-table-group.png","orientation":"landscape"},{"id":"make-your-own-028","title":"Apps And Sound Tools Three Scenarios Alt A","category":"Apps and Sound Tools","description":"Alternate three-scenario apps and sound tools page (phone/speaker versions).","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/06%20Apps%20and%20Sound%20Tools/apps-and-sound-tools-three-scenarios-alt-a.png","orientation":"landscape"},{"id":"make-your-own-029","title":"Apps And Sound Tools Three Scenarios","category":"Apps and Sound Tools","description":"Apps and sound tools shown on the move, at the table, and stand-and-create.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/06%20Apps%20and%20Sound%20Tools/apps-and-sound-tools-three-scenarios.png","orientation":"landscape"},{"id":"make-your-own-030","title":"Movement Levels And Sound Levels","category":"Complexity Levels","description":"Side-by-side guide for increasing movement complexity and sound complexity from simple to more complex.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/07%20Complexity%20Levels/movement-levels-and-sound-levels.png","orientation":"portrait"},{"id":"make-your-own-031","title":"Movement Levels Complexity Progression","category":"Complexity Levels","description":"Four movement levels from simple repeated moves to complex dance-like flow.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/07%20Complexity%20Levels/movement-levels-complexity-progression.png","orientation":"landscape"},{"id":"make-your-own-032","title":"Sound Levels Complexity Progression","category":"Complexity Levels","description":"Four sound levels from one clear beat to full music-like patterns.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/07%20Complexity%20Levels/sound-levels-complexity-progression.png","orientation":"landscape"},{"id":"make-your-own-033","title":"Create Movement And Sound Classroom","category":"Settings and Locations","description":"Children create movement and sound in the classroom with app, speaker, beat, move, and record.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/08%20Settings%20and%20Locations/create-movement-and-sound-classroom.png","orientation":"landscape"},{"id":"make-your-own-034","title":"Create Movement And Sound Gym","category":"Settings and Locations","description":"Children create movement and sound in the gym with app, speaker, drums, dance, and recording.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/08%20Settings%20and%20Locations/create-movement-and-sound-gym.png","orientation":"landscape"},{"id":"make-your-own-035","title":"Create Movement And Sound Hallway","category":"Settings and Locations","description":"Children create movement and sound in a school hallway with app, speaker, move, play, and record.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/08%20Settings%20and%20Locations/create-movement-and-sound-hallway.png","orientation":"landscape"},{"id":"make-your-own-036","title":"Create Movement And Sound Outside","category":"Settings and Locations","description":"Children create movement and sound outdoors using app, speaker, instruments, movement, and recording.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/08%20Settings%20and%20Locations/create-movement-and-sound-outside.png","orientation":"landscape"},{"id":"make-your-own-037","title":"Use It Anywhere Four Settings Alt A","category":"Settings and Locations","description":"Alternate Use It Anywhere overview with four setting panels.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/08%20Settings%20and%20Locations/use-it-anywhere-four-settings-alt-a.png","orientation":"landscape"},{"id":"make-your-own-038","title":"Use It Anywhere Four Settings","category":"Settings and Locations","description":"Overview showing children creating movement and sound outside, in hallway, gym, and classroom.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/08%20Settings%20and%20Locations/use-it-anywhere-four-settings.png","orientation":"portrait"},{"id":"make-your-own-039","title":"Portable Setup Simple Tools","category":"Portable Setup","description":"Portable setup showing app, speaker, record tools, and instruments children can use almost anywhere.","imageUrl":"https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/09%20Portable%20Setup/portable-setup-simple-tools.png","orientation":"landscape"}],"copyright":["Copyright 2026","BridgetteNicholson.com","Permission to use with your own students and children.","@bridgettenicholson"]};
+const selected = new Set();
+const grid = document.getElementById("grid");
+const cat = document.getElementById("cat");
+const q = document.getElementById("q");
+const printBtn = document.getElementById("printSel");
+const cats = [...new Set(DATA.pages.map(p => p.category).filter(Boolean))].sort();
+cats.forEach(c => { const o=document.createElement("option"); o.value=c; o.textContent=c; cat.appendChild(o); });
+
+function filtered(){
+  const term = q.value.trim().toLowerCase();
+  const c = cat.value;
+  return DATA.pages.filter(p => {
+    if (c && p.category !== c) return false;
+    if (!term) return true;
+    return [p.title,p.category,p.description].join(" ").toLowerCase().includes(term);
+  });
+}
+function syncPrint(){
+  printBtn.disabled = selected.size === 0;
+  printBtn.textContent = "Print selected (" + selected.size + ")";
+}
+function render(){
+  const pages = filtered();
+  grid.innerHTML = "";
+  pages.forEach(p => {
+    const card = document.createElement("article");
+    card.className = "card" + (selected.has(p.id) ? " selected" : "");
+    card.innerHTML = '<div class="card-cover" data-open="'+p.id+'"><img src="'+p.imageUrl+'" alt="" loading="lazy" /></div>'+
+      '<div class="card-body"><h2></h2><p></p><div class="card-actions"><button class="btn btn-primary" data-toggle="'+p.id+'" type="button">Select</button></div></div>';
+    card.querySelector("h2").textContent = p.title;
+    card.querySelector("p").textContent = p.category || "";
+    card.querySelector("[data-toggle]").textContent = selected.has(p.id) ? "Selected" : "Select";
+    grid.appendChild(card);
+  });
+  syncPrint();
+}
+grid.addEventListener("click", e => {
+  const open = e.target.closest("[data-open]");
+  if (open) {
+    const page = DATA.pages.find(p => p.id === open.dataset.open);
+    if (!page) return;
+    document.getElementById("lbImg").src = page.imageUrl;
+    document.getElementById("lightbox").classList.add("open");
+    return;
+  }
+  const tog = e.target.closest("[data-toggle]");
+  if (tog) {
+    const id = tog.dataset.toggle;
+    if (selected.has(id)) selected.delete(id); else selected.add(id);
+    render();
+  }
+});
+document.getElementById("closeLb").onclick = () => document.getElementById("lightbox").classList.remove("open");
+document.getElementById("lightbox").onclick = e => { if (e.target.id === "lightbox") e.currentTarget.classList.remove("open"); };
+q.oninput = render; cat.onchange = render;
+document.getElementById("selectVisible").onclick = () => { filtered().forEach(p => selected.add(p.id)); render(); };
+document.getElementById("clearSel").onclick = () => { selected.clear(); render(); };
+document.getElementById("printSel").onclick = async () => {
+  const pages = DATA.pages.filter(p => selected.has(p.id));
+  const root = document.getElementById("printRoot");
+  root.innerHTML = "";
+  for (const p of pages) {
+    const sheet = document.createElement("div");
+    sheet.className = "print-sheet";
+    const img = document.createElement("img");
+    img.src = p.imageUrl;
+    img.alt = p.title;
+    sheet.appendChild(img);
+    const credit = document.createElement("div");
+    credit.className = "credit";
+    credit.innerHTML = DATA.copyright.map(l => "<div>"+l+"</div>").join("");
+    sheet.appendChild(credit);
+    root.appendChild(sheet);
+  }
+  await Promise.all([...root.querySelectorAll("img")].map(img => img.complete ? null : new Promise(r => { img.onload=r; img.onerror=r; })));
+  window.print();
+};
+render();
+</script>
+</body>
+</html>
