@@ -1,4 +1,4 @@
-﻿# Supports-Make-Your-Own
+# Resources-Make-Your-Own
 
 Standalone Make Your Own Resources viewer (browse, select, print).
 
