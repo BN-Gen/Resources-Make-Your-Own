@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Dynamic Learning — Working Activity Test</title>
+<style>
+:root{--blue:#1173BA;--orange:#EF5A24;--red:#BF272D;--navy:#004674;--ink:#111;--line:#222;--soft:#f5f5f5}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#fff;color:var(--ink);font-size:18px;line-height:1.35}header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:2px solid #111;padding:12px 14px;display:flex;align-items:center;gap:10px}header strong{font-size:18px}header .spacer{flex:1}button{font:inherit;min-height:48px;padding:10px 14px;border:2px solid #111;border-radius:7px;background:#fff;color:#111;font-weight:700;touch-action:manipulation}button.primary{background:var(--blue);color:#fff;border-color:var(--blue)}button.orange{background:var(--orange);color:#fff;border-color:var(--orange)}button.red{background:var(--red);color:#fff;border-color:var(--red)}button:active{transform:scale(.98)}main{max-width:980px;margin:auto;padding:14px}.test{border:3px solid var(--blue);padding:18px;border-radius:10px;margin:4px 0 20px;text-align:center}.test h1{font-size:28px;margin:0 0 8px}.test .count{font-size:64px;font-weight:800;color:var(--blue);line-height:1}.test p{margin:8px 0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{border:2px solid #111;border-radius:10px;padding:14px;background:#fff;min-width:0}.card h2{font-size:22px;margin:0 0 8px}.card p{margin:0 0 10px}.stage{border:1px solid #888;border-radius:8px;background:#fafafa;min-height:230px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin:10px 0}.stage img{width:100%;height:100%;max-height:420px;object-fit:contain;display:block}.status{border-left:5px solid var(--orange);background:#fafafa;padding:10px;margin:10px 0;font-weight:700}.controls{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.big-result{font-size:26px;font-weight:800;padding:14px;border:2px dashed #333;border-radius:8px;margin:10px 0;min-height:64px}.tokens{display:flex;flex-wrap:wrap;gap:8px;min-height:54px;padding:8px;border:1px solid #777;border-radius:8px;margin:10px 0}.token{background:#fff;border:2px solid var(--navy);color:var(--navy);border-radius:7px;padding:8px 11px;font-weight:800}.quad{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.mini{border:1px solid #777;border-radius:7px;overflow:hidden;background:#fafafa}.mini img{width:100%;height:145px;object-fit:contain;display:block}.mini b{display:block;padding:7px;font-size:14px}.footer{margin-top:20px;border-top:1px solid #aaa;padding:15px 0 40px;font-size:14px;color:#555}.source{font-size:12px;color:#666;word-break:break-word}
+@media(max-width:700px){body{font-size:17px}.grid{grid-template-columns:1fr}main{padding:10px}.card{padding:12px}.stage{min-height:210px}.quad{grid-template-columns:1fr 1fr}.mini img{height:125px}.test h1{font-size:25px}.test .count{font-size:58px}header{padding:9px 10px}header strong{font-size:16px}}
+</style>
+</head>
+<body>
+<header><strong>Dynamic Learning — live working test</strong><span class="spacer"></span><span id="topStatus">Ready</span></header>
+<main>
+<section class="test">
+<h1>FIRST: Does this page actually work?</h1>
+<div class="count" id="tapCount">0</div>
+<p>Tap the button. The number above must change immediately.</p>
+<button class="primary" id="tapTest">TAP ME — CHANGE THE NUMBER</button>
+<p id="testMessage"><b>Not tapped yet.</b></p>
+</section>
+
+<div class="grid">
+<section class="card" id="roleCard">
+<h2>1. Role Roulette</h2><p>One tap picks a different role from your Make Your Own materials.</p>
+<div class="stage"><img id="roleImg" alt="Role activity visual"></div>
+<div class="big-result" id="roleText">Tap Pick a Role</div>
+<button class="orange" id="roleBtn">PICK A ROLE</button>
+</section>
+
+<section class="card" id="settingCard">
+<h2>2. Where Can We Do It?</h2><p>Cycle through different real settings: classroom, gym, hallway, outside.</p>
+<div class="stage"><img id="settingImg" alt="Setting visual"></div>
+<div class="big-result" id="settingText">Tap Next Setting</div>
+<button class="primary" id="settingBtn">NEXT SETTING</button>
+</section>
+
+<section class="card" id="percCard">
+<h2>3. Build a Body-Percussion Pattern</h2><p>Tap actions to create a sequence. This is a real editable activity, not a picture viewer.</p>
+<div class="tokens" id="patternTokens"></div>
+<div class="controls">
+<button data-sound="CLAP">CLAP</button><button data-sound="TAP">TAP</button><button data-sound="PAT">PAT</button><button data-sound="STOMP">STOMP</button>
+</div>
+<div class="controls"><button id="patternBack">UNDO</button><button class="red" id="patternClear">CLEAR</button></div>
+<div class="status" id="patternStatus">0 actions</div>
+</section>
+
+<section class="card" id="buddyCard">
+<h2>4. Buddy Beats Card Draw</h2><p>Every tap draws a different Buddy Beats resource/activity.</p>
+<div class="stage"><img id="buddyImg" alt="Buddy Beats activity"></div>
+<div class="big-result" id="buddyText">Tap Draw a Card</div>
+<button class="orange" id="buddyBtn">DRAW ANOTHER CARD</button>
+</section>
+
+<section class="card" id="typingCard">
+<h2>5. Rhythmic Typing Switchboard</h2><p>Tap a choice. The visual changes immediately.</p>
+<div class="stage"><img id="typingImg" alt="Rhythmic Typing visual"></div>
+<div class="controls"><button data-type="program">PROGRAM</button><button data-type="keyboards">KEYBOARDS</button><button data-type="workbook">WORKBOOK</button></div>
+<div class="status" id="typingStatus">Choose one.</div>
+</section>
+
+<section class="card" id="sensoryCard">
+<h2>6. Learning-Ready Lens</h2><p>Switch between your sensory and program visuals, then use the prompt below for discussion.</p>
+<div class="stage"><img id="sensoryImg" alt="Sensory visual"></div>
+<div class="controls"><button data-sense="regulation">REGULATION</button><button data-sense="pathways">PATHWAYS</button><button data-sense="skills">SKILLS</button></div>
+<div class="big-result" id="sensoryPrompt">What would help this learner participate right now?</div>
+</section>
+
+<section class="card" id="sequenceCard">
+<h2>7. Build a 3-Step Activity</h2><p>Choose three steps from your existing rhythm/movement ideas.</p>
+<div class="tokens" id="seqTokens"></div>
+<div class="controls"><button data-step="FEEL THE BEAT">FEEL</button><button data-step="MOVE THE BEAT">MOVE</button><button data-step="PLAY TOGETHER">PLAY</button><button data-step="TRY A SEQUENCE">SEQUENCE</button><button data-step="RECORD & REFLECT">RECORD</button></div>
+<div class="status" id="seqStatus">Choose 3 steps.</div>
+<button class="red" id="seqClear">START OVER</button>
+</section>
+
+<section class="card" id="mixerCard">
+<h2>8. Dynamic Learning Mixer</h2><p>One tap creates a new combination from four different parts of your work.</p>
+<div class="quad">
+<div class="mini"><img id="mixSetting"><b id="mixSettingLabel">Setting</b></div>
+<div class="mini"><img id="mixRole"><b id="mixRoleLabel">Role</b></div>
+<div class="mini"><img id="mixBuddy"><b id="mixBuddyLabel">Rhythm</b></div>
+<div class="mini"><img id="mixTech"><b id="mixTechLabel">Technology/Support</b></div>
+</div>
+<div class="big-result" id="mixText">Tap MIX IT</div>
+<button class="primary" id="mixBtn">MIX IT — MAKE A NEW ACTIVITY</button>
+</section>
+</div>
+
+<div class="footer">Temporary working prototype. Uses Bridgette Nicholson’s existing public resource media. This test page does not modify the original media files.</div>
+</main>
+<script>
+const makeBase='https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Make%20Your%20Own%20Workbook%20-%20Version%201/';
+const buddyBase='https://mediaforactivities.general-241.workers.dev/Workbook-materials-for-programs/Buddy%20Beats%20-%20Organized/01%20Workbook%20v1%20-%20Candidates/';
+const rawBBS='https://raw.githubusercontent.com/BN-Gen/BBS-Website-pages/main/assets/program-previews/';
+const rawRT='https://raw.githubusercontent.com/BN-Gen/Rhythmic-Typing-Keyboards/main/';
+const roles=[
+ {n:'Director — Start / Change / Stop',u:makeBase+'01%20Group%20Roles/director-start-change-stop.png'},
+ {n:'Movement Maker — Choose / Create / Demonstrate',u:makeBase+'01%20Group%20Roles/movement-maker-choose-create-demonstrate.png'},
+ {n:'Music Makers — Beat / Tap / Use Tech',u:makeBase+'01%20Group%20Roles/music-makers-beat-tap-use-tech.png'},
+ {n:'Recorder — Record / Review / Reflect',u:makeBase+'01%20Group%20Roles/recorder-record-review-reflect.png'},
+ {n:'Movement Followers — Watch / Follow / Join',u:makeBase+'01%20Group%20Roles/movement-followers-watch-follow-join.png'}
+];
+const settings=[
+ {n:'Classroom',u:makeBase+'08%20Settings%20and%20Locations/create-movement-and-sound-classroom.png'},
+ {n:'Gym',u:makeBase+'08%20Settings%20and%20Locations/create-movement-and-sound-gym.png'},
+ {n:'Hallway',u:makeBase+'08%20Settings%20and%20Locations/create-movement-and-sound-hallway.png'},
+ {n:'Outside',u:makeBase+'08%20Settings%20and%20Locations/create-movement-and-sound-outside.png'}
+];
+const buddy=[
+ {n:'Beat Pathways & Sequences',u:buddyBase+'buddy-beats-beat-pathways-and-sequences.png'},
+ {n:'Movement Pattern Builder',u:buddyBase+'buddy-beats-movement-pattern-builder.png'},
+ {n:'Draw, Write & Build the Beat',u:buddyBase+'buddy-beats-draw-write-and-build-the-beat.png'},
+ {n:'Group Roles & Collaboration Signals',u:buddyBase+'buddy-beats-group-roles-and-collaboration-signals.png'},
+ {n:'Typing to the Beat',u:buddyBase+'buddy-beats-typing-to-the-beat.png'},
+ {n:'Sound Move Record Studio',u:buddyBase+'buddy-beats-sound-move-record-studio.png'}
+];
+const typing={
+ program:{n:'Rhythmic Typing',u:rawBBS+'rhythmic-typing.png'},
+ keyboards:{n:'Rhythmic Typing Keyboards',u:rawRT+'Large%20Button%20Rhythmic%20Typing%20Keyboards.png'},
+ workbook:{n:'Rhythmic Typing Kids Workbook',u:rawRT+'Large%20Button%20Rhythmic%20Typing%20kids%20workbook.png'}
+};
+const sensory={
+ regulation:{n:'Sensory Regulation',u:rawBBS+'sensory-regulation.png',p:'What would help this learner become more ready to participate?'},
+ pathways:{n:'Sensory Pathways',u:rawBBS+'sensory-pathways.png',p:'Which body and sensory pathways are part of this activity?'},
+ skills:{n:'Skills',u:rawBBS+'skills.png',p:'What skill are we asking the learner to use, and what support changes access?'}
+};
+let tap=0,settingIndex=-1,roleIndex=-1,buddyIndex=-1,pattern=[],seq=[];
+function byId(id){return document.getElementById(id)}
+function pickDifferent(arr,last){if(arr.length<2)return 0;let i;do{i=Math.floor(Math.random()*arr.length)}while(i===last);return i}
+function showImage(img,item){img.src=item.u;img.alt=item.n}
+byId('tapTest').addEventListener('click',()=>{tap++;byId('tapCount').textContent=tap;byId('testMessage').innerHTML='<b>YES — JavaScript is running. Tap count: '+tap+'</b>';byId('topStatus').textContent='Working ✓';});
+byId('roleBtn').addEventListener('click',()=>{roleIndex=pickDifferent(roles,roleIndex);const x=roles[roleIndex];showImage(byId('roleImg'),x);byId('roleText').textContent=x.n;});
+byId('settingBtn').addEventListener('click',()=>{settingIndex=(settingIndex+1)%settings.length;const x=settings[settingIndex];showImage(byId('settingImg'),x);byId('settingText').textContent=x.n;});
+document.querySelectorAll('[data-sound]').forEach(b=>b.addEventListener('click',()=>{pattern.push(b.dataset.sound);renderPattern()}));
+byId('patternBack').addEventListener('click',()=>{pattern.pop();renderPattern()});
+byId('patternClear').addEventListener('click',()=>{pattern=[];renderPattern()});
+function renderPattern(){byId('patternTokens').innerHTML=pattern.map(x=>'<span class="token">'+x+'</span>').join('');byId('patternStatus').textContent=pattern.length+' action'+(pattern.length===1?'':'s')+(pattern.length?' — tap the pattern together.':'');}
+byId('buddyBtn').addEventListener('click',()=>{buddyIndex=pickDifferent(buddy,buddyIndex);const x=buddy[buddyIndex];showImage(byId('buddyImg'),x);byId('buddyText').textContent=x.n;});
+document.querySelectorAll('[data-type]').forEach(b=>b.addEventListener('click',()=>{const x=typing[b.dataset.type];showImage(byId('typingImg'),x);byId('typingStatus').textContent=x.n;}));
+document.querySelectorAll('[data-sense]').forEach(b=>b.addEventListener('click',()=>{const x=sensory[b.dataset.sense];showImage(byId('sensoryImg'),x);byId('sensoryPrompt').textContent=x.p;}));
+document.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>{if(seq.length>=3)return;seq.push(b.dataset.step);renderSeq()}));
+byId('seqClear').addEventListener('click',()=>{seq=[];renderSeq()});
+function renderSeq(){byId('seqTokens').innerHTML=seq.map((x,i)=>'<span class="token">'+(i+1)+'. '+x+'</span>').join('');byId('seqStatus').textContent=seq.length<3?'Choose '+(3-seq.length)+' more step'+(3-seq.length===1?'':'s')+'.':'Your 3-step activity is ready.';}
+byId('mixBtn').addEventListener('click',()=>{const s=settings[Math.floor(Math.random()*settings.length)],r=roles[Math.floor(Math.random()*roles.length)],b=buddy[Math.floor(Math.random()*buddy.length)],t=typing[Object.keys(typing)[Math.floor(Math.random()*3)]];showImage(byId('mixSetting'),s);showImage(byId('mixRole'),r);showImage(byId('mixBuddy'),b);showImage(byId('mixTech'),t);byId('mixSettingLabel').textContent=s.n;byId('mixRoleLabel').textContent=r.n;byId('mixBuddyLabel').textContent=b.n;byId('mixTechLabel').textContent=t.n;byId('mixText').textContent=s.n+' + '+r.n+' + '+b.n+' + '+t.n;});
+// initial images so there is something visible immediately
+showImage(byId('roleImg'),roles[0]);showImage(byId('settingImg'),settings[0]);showImage(byId('buddyImg'),buddy[0]);showImage(byId('typingImg'),typing.program);showImage(byId('sensoryImg'),sensory.regulation);
+</script>
+</body>
+</html>
